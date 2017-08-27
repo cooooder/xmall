@@ -58,7 +58,6 @@
       <div class="addr-list-wrap">
         <div class="addr-list">
           <ul>
-          	<!--点击判断当前样式，并保存选中的addressId，作为传参备用-->
             <li v-for="(item,index) in AddressListFilter" :class="{'check':checkIndex == index}" @click="checkIndex=index;selectedAddressId=item.addressId">
               <dl>
                 <dt>{{item.userName}}</dt>
@@ -150,10 +149,8 @@
 				addressList:[],
 				limit:3,
 				checkIndex:0,
-				//模态框显隐
 				isModal:false,
 				addressId:'',
-				//选中的结算地址
 				selectedAddressId:''
 			}
 		},
@@ -162,7 +159,6 @@
 		},
 		computed:{
 			AddressListFilter(){
-				//返回一个全新数组，不会污染addressList
 				return this.addressList.slice(0,this.limit);
 			},
 			
@@ -178,13 +174,9 @@
 				axios.get('/users/addressList').then(response => {
 					let res = response.data;
 					this.addressList = res.result;
-					//初始化默认样式和默认addressId,给默认地址添加样式
-					//注意then是异步操作，必须放在then里面才能生效。
 					this.addressList.forEach((v,i) => {
 						if (v.isDefault) {
-							//通过改变checkIndex的初始值，完成默认样式添加
 							this.checkIndex = i;	
-							//初始化默认的addressId
 							this.selectedAddressId=v.addressId;
 						}
 					});
@@ -208,13 +200,11 @@
 					}
 				})
 			},
-			//模态框显隐操作
 			closeModal(){
 				this.isModal = false;
 			},
 			confirmModal(addressId){
 				this.isModal =true;
-				//将addressId接收并缓存起来
 				this.addressId = addressId;				
 			},
 			delAddress(){

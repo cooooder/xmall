@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
 require('./../util/util');
-//涉及数据库操作，先把数据模型引入进来
 var User = require('./../models/user');
 
 /* GET users listing. */
@@ -9,7 +8,6 @@ router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
 router.post('/login',(req,res,next) => {
-	//先拿到前端发送的查询参数，保存下来
 	let param = {
 		userName:req.body.userName,
 		userPwd:req.body.userPwd
@@ -22,7 +20,6 @@ router.post('/login',(req,res,next) => {
 			});
 		}else{
 			if (doc) {
-				//查询成功了，说明可以登录了，创建一个cookie
 				res.cookie('userId',doc.userId,{
 					path:'/',
 					maxAge:1000*60*60
@@ -43,11 +40,10 @@ router.post('/login',(req,res,next) => {
 		}
 	})
 });
-//登出操作
 router.post('/logout',(req,res,next) =>{
 	res.cookie('userId','',{
 		path:'/',
-		maxAge:-1 //-1表示让cookie失效
+		maxAge:-1 
 	});
 	res.json({
 		status:'0',
@@ -55,7 +51,6 @@ router.post('/logout',(req,res,next) =>{
 		result:''
 	})
 });
-//查询购物车数量
 router.get('/getCartCount',(req,res,next) => {
 	if (req.cookies && req.cookies.userId) {
 		let userId = req.cookies.userId;
@@ -69,7 +64,6 @@ router.get('/getCartCount',(req,res,next) => {
 			}else{
 				let cartList = doc.cartList;
 				let cartCount = 0;
-				//购物车数量通过遍历累加productNum获得
 				cartList.map(item => {
 					cartCount += parseInt(item.productNum);
 				});
@@ -83,7 +77,6 @@ router.get('/getCartCount',(req,res,next) => {
 	}
 	
 })
-//登录状态校验
 router.get('/checkLogin',(req,res,next) => {
 	if (req.cookies.userId) {
 		res.json({
@@ -101,7 +94,6 @@ router.get('/checkLogin',(req,res,next) => {
 	}
 })
 
-//购物车列表
 router.get('/cart',(req,res,next) => {
 	let userId = req.cookies.userId;
 	User.findOne({userId:userId},(err,doc) => {
@@ -122,7 +114,6 @@ router.get('/cart',(req,res,next) => {
 		}
 	})
 })
-//购物车删除
 router.post('/cartDel',(req,res,next) => {
 	let userId = req.cookies.userId,productId = req.body.productId;
 	User.update({userId:userId},{$pull:{'cartList':{'productId':productId}}},(err,doc) => {
@@ -141,7 +132,6 @@ router.post('/cartDel',(req,res,next) => {
 		}
 	})
 })
-//购物车编辑产品数量
 router.post('/cartEdit',(req,res,next) => {
 	let userId = req.cookies.userId,
 	productId = req.body.productId,
@@ -167,7 +157,6 @@ router.post('/cartEdit',(req,res,next) => {
 	})
 	
 })
-//全选状态保存
 router.post('/editCheckAll',(req,res,next) => {
 	let userId = req.cookies.userId,
 	checkAll = req.body.checkAll ? '1' :'0';
@@ -202,7 +191,6 @@ router.post('/editCheckAll',(req,res,next) => {
 		}
 	})
 })
-//收货地址查询
 router.get('/addressList',(req,res,next) => {
 	let userId = req.cookies.userId;
 	User.findOne({userId:userId},(err,doc) => {
@@ -222,7 +210,6 @@ router.get('/addressList',(req,res,next) => {
 	})
 	
 })
-//设置默认地址
 router.post('/setDefault',(req,res,next) => {
 	let userId = req.cookies.userId,
 	addressId = req.body.addressId;
@@ -269,7 +256,6 @@ router.post('/setDefault',(req,res,next) => {
 		})
 	}
 })
-//删除地址接口
 router.post('/delAddress',(req,res,next) => {
 	let userId = req.cookies.userId,
 	addressId = req.body.addressId;
@@ -297,7 +283,6 @@ router.post('/delAddress',(req,res,next) => {
 		});
 	}
 });
-//创建订单
 router.post('/payment',(req,res,next) => {
 	let userId = req.cookies.userId,
 	addressId = req.body.addressId,
@@ -311,26 +296,22 @@ router.post('/payment',(req,res,next) => {
 			});
 		}else{
 			let address = '',goodsList =  [];
-			//获取当前用户的地址信息
 			doc.addressList.forEach(item => {
 				if (addressId == item.addressId) {
 					address = item;
 				}
 			});
-			//获取用户购物车的商品
 			doc.cartList.filter(item => {
 				if(item.checked == '1'){
 					goodsList.push(item);
 				}
 				
 			});
-			let platform = '588';//代表当前系统架构平台码
+			let platform = '588';
 			let rm1 = Math.floor(Math.random()*10);
 			let rm2 = Math.floor(Math.random()*10);
 			let sysDate = new Date().Format('yyyyMMddhhmmss');
 			let createDate = new Date().Format('yyyy-MM-dd hh:mm:ss');
-			//订单编号的生成，每家公司都不一样。
-			//平台码+随机数+格式化日期+随机数
 			let orderId = platform+rm1+sysDate+rm2;
 			let order = {
 				orderId:orderId,
@@ -363,7 +344,6 @@ router.post('/payment',(req,res,next) => {
 		}
 	})
 })
-//订单成功
 router.get('/orderSuccess',(req,res,next) => {
 	let userId = req.cookies.userId,
 	orderId = req.query.orderId;	

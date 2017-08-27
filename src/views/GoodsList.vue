@@ -98,27 +98,19 @@
 	export default {
 		data(){
 			return {
-				//定义价格区间数据
 				priceFilter:[
-				//此处数字不转换为字符串的话，前端会自动转换为整数
 					{minPrice:'0.00',maxPrice:'100.00'},
 					{minPrice:'100.00',maxPrice:'500.00'},
 					{minPrice:'500.00',maxPrice:'1000.00'},
 					{minPrice:'1000.00',maxPrice:'5000.00'},
 				],
-				//设置当前样式
 				classActive:'all',
-				//设置响应式 弹出价格筛选框
 				classShowFilter:false,
-				//设置响应式 弹出透明遮罩
 				classFilterMask:false,
-				//后端数据接口
 				goodsList:[],
-				//前端参数
 				sortFlag:true,//控制升序or降序
 				page:1,
 				pageSize:8,
-				//设置infiniteScroll
 				busy:true,
 				infiniteShow:true,
 				mdshow:false,
@@ -135,7 +127,6 @@
 			Modal
 		},
 		methods:{
-			//控制价格筛选框和透明遮罩的显示/隐藏
 			showFilter(){
 				this.classShowFilter = true;
 				this.classFilterMask = true;
@@ -144,7 +135,6 @@
 				this.classShowFilter = false;
 				this.classFilterMask = false;
 			},
-			//控制价格筛选框的选择状态
 			setPriceFilter(index){
 				this.classActive = index;
 				this.hideMask();
@@ -156,25 +146,17 @@
 					page:this.page,
 					pageSize:this.pageSize,
 					updown:this.sortFlag ? 1 : -1,
-					//价格过滤
 					priceLevel:this.classActive
 				};
-				//axios get api 需要在data参数中添加params才可以。
 				axios.get('/goods',{params:param}).then(response => {
 					let res = response.data;
-					//关闭loading图标
 					this.infiniteShow = false;
 					if(res.status == '0'){
-						//如果flag为true表示流式分页，数组需要累加
 						if(flag){
 							this.goodsList = [...this.goodsList,...res.result.list];
-							//this.goodsList = this.goodsList.concat(res.result.list);
-							//当数据少于一页时，停止流式分页
 							this.busy = res.result.count < this.pageSize ? true : false;
 						}else{
-							//默认不累加，只有滚动加载时累加。
 							this.goodsList = res.result.list;
-							//打开滚动加载
 							this.busy = false;
 						}
 						
@@ -190,9 +172,7 @@
 			},
 			loadMore(){
 				this.busy = true;
-				//发起请求前，开启loading图标
 				this.infiniteShow = true;
-				//处理滚动产生的频繁请求
 				 setTimeout(() => {
 			        this.page++;
 			        this.getGoodsList(true);

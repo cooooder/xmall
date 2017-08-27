@@ -56,7 +56,6 @@
             </ul>
           </div>
           <ul class="cart-item-list">
-          	<!--遍历购物车数据，过滤，只拿选中的数据-->
             <li v-for="item in cartList" v-if="item.checked == '1'">
               <div class="cart-tab-1">
                 <div class="cart-item-pic">
@@ -139,11 +138,8 @@
 	export default{
 		data(){
 			return {
-				//配送费
 				shipping:100,
-				//折扣
 				discount:200,
-				//扣税
 				tax:400,
 				subTotal:0,
 				orderTotal:0,
@@ -173,7 +169,6 @@
 				});
 			},
 			payment(){
-				//拿到当前页面参数
 				var addressId = this.$route.query.addressId;
 				axios.post('/users/payment',{
 					addressId:addressId,

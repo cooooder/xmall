@@ -78,7 +78,6 @@
 <script>
 	import './../assets/css/login.css'
 	import axios from 'axios'
-	//ES6解构赋值，得到里面的mapState对象
 	import {mapState} from 'vuex'
 	export default{
 		data(){
@@ -93,7 +92,6 @@
 			}
 		},
 		computed:{
-			//ES6解构赋值,实时更新vuex state中的cartCount属性
 			...mapState(['cartCount'])
 		},
 		mounted(){
@@ -105,23 +103,16 @@
 					let res = response.data;
 					if (res.status == '0') {
 						this.nickName = res.result.userName;
-						//查询购物车数量
 						this.getCartCount();
-						//表示当前处于登录状态
 						this.logStatus = '0';
 					}
 				})
-				//console.count('init执行次数：');
 			},
 			checkLogin(){
-				//检查登录状态
 				if (this.logStatus == '0') {
-					//如果登录了，跳转到购物车
 					this.$router.push('/cart');
 				}else{
-					//如果未登录，弹出登录框
 					this.loginModalFlag = true;
-					//保存要前往的路径，如果登录成功就跳转过去
 					this.cartPath = '/cart';
 				}
 			},
@@ -139,11 +130,8 @@
 						this.errorTip = false;
 						this.loginModalFlag = false;
 						this.nickName = res.result.userName;
-						//登录后查询购物车数量
 						this.getCartCount();
-						//表示当前处于登录状态
 						this.logStatus = '0';
-						//如果有路径记录，就前往该路径
 						if (this.cartPath) {
 							this.$router.push(this.cartPath);
 						}

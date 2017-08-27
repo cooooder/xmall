@@ -28,11 +28,9 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-    	//本例配置只能开发时用，线上无法使用，线上需要用nignx代理
     		'/goods':{
     			target:'http://localhost:3000'
     		},
-    		//只匹配二级目录
     		'/goods/*':{
     			target:'http://localhost:3000'
     		},

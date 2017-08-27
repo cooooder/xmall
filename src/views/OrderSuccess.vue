@@ -63,7 +63,6 @@
 		methods:{
 			init(){
 				let orderId = this.$route.query.orderId;
-				//防止篡改，如果没有orderId，不让提交
 				if (!orderId) {
 					return;
 				}

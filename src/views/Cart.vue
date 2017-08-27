@@ -157,12 +157,10 @@
 		mounted(){
 			this.init();
 		},
-		//实时计算的属性
 		computed:{
 			checkAllFlag(){
 				return this.checkedCount == this.cartList.length;
 			},
-			//实时计算是属性，不是方法。调用时要按属性方式调用，不是方法。
 			checkedCount(){
 				let i = 0;
 				this.cartList.forEach(item => {
@@ -220,7 +218,6 @@
 					}
 					item.productNum--;
 				}else{
-					//点击就对checked值取反，才会有取消或选中的变化
 					item.checked = item.checked =='1' ? '0' : '1';
 				}
 				axios.post('/users/cartEdit',{
@@ -252,7 +249,6 @@
 			},
 			checkOut(){
 				if(this.checkedCount > 0){
-					//实现页面跳转
 					this.$router.push({
 						path:'/address'
 					})
